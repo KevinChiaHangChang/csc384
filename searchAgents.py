@@ -402,6 +402,15 @@ def cornersHeuristic(state, problem):
 
     "*** YOUR CODE HERE ***"
     return 0 # Default to trivial solution
+    #Implement Manhattan distance
+    #xy1 = state[0]
+    #minDist = None
+    #for i in range(4):
+    #    if state[i+1] is False:
+    #        manhattanDist = abs(xy1[0]-corners[i][0]) + abs(xy1[1]-corners[i][1])
+    #        if minDist is None or manhattanDist < minDist:
+    #            minDist = manhattanDist
+    #return minDist
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
