@@ -401,16 +401,23 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    return 0 # Default to trivial solution
-    #Implement Manhattan distance
-    #xy1 = state[0]
-    #minDist = None
-    #for i in range(4):
-    #    if state[i+1] is False:
-    #        manhattanDist = abs(xy1[0]-corners[i][0]) + abs(xy1[1]-corners[i][1])
-    #        if minDist is None or manhattanDist < minDist:
-    #            minDist = manhattanDist
-    #return minDist
+    # return 0 # Default to trivial solution
+    curr = state[0]
+    totalDist = 0
+    #Implement min spanning tree including unvisited corners and current Pacman position
+    unvisited_corners = [x for x, y in zip(corners,state[1:5]) if y == False]
+    while unvisited_corners:
+        minDist = 10000
+        minIndex = -1
+        for index, corner in enumerate(unvisited_corners):
+            dist = abs(curr[0]-corner[0])+abs(curr[1]-corner[1])
+            if dist < minDist:
+                minDist = dist
+                minIndex = index
+        totalDist += minDist
+        curr = unvisited_corners[minIndex]
+        del unvisited_corners[minIndex]
+    return totalDist
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
@@ -502,7 +509,43 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    #totalDist = 0
+    #Implement min spanning tree including uneaten food and current Pacman position
+    #uneaten_food = foodGrid.asList()
+    #while len(uneaten_food) != 0:
+    #    minDist = 10000
+    #    minIndex = -1
+    #    for index, food in enumerate(uneaten_food):
+    #        dist = abs(position[0]-food[0])+abs(position[1]-food[1])
+    #        if dist < minDist:
+    #            minDist = dist
+    #            minIndex = index
+    #    totalDist += minDist
+    #    position = uneaten_food[minIndex]
+    #    del uneaten_food[minIndex]
+    #return totalDist
+
+    #Find distance from each food location to every other food location, then take the max
+    uneaten = foodGrid.asList()
+    num_uneaten = len(uneaten)
+    gameState = problem.startingGameState
+    max_dist = 0
+    closest = 0
+    #Corner case: only 1 food location left
+    if num_uneaten == 1:
+        max_dist = mazeDistance(position,uneaten[0],gameState)
+    for i in range(num_uneaten):
+        for j in range(num_uneaten):
+            if i == j:
+                continue
+            dist = mazeDistance(uneaten[i],uneaten[j],gameState)
+            if dist > max_dist:
+                max_dist = dist
+                closest1 = mazeDistance(position,uneaten[i],gameState)
+                closest2 = mazeDistance(position,uneaten[j],gameState)
+                closest = closest1 if closest1 < closest2 else closest2
+    #print "Heuristic: " + str(max_dist+closest)
+    return max_dist+closest
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
@@ -533,7 +576,9 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        closestPath = search.bfs(problem)
+        return closestPath
+        
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
@@ -569,7 +614,15 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x,y = state
 
         "*** YOUR CODE HERE ***"
-        isGoal = self.food[x][y] 
+        isGoal = self.food[x][y]
+        # For display purposes only
+        if isGoal:
+            self._visitedlist.append(state)
+            import __main__
+            if '_display' in dir(__main__):
+                if 'drawExpandedCells' in dir(__main__._display): #@UndefinedVariable
+                    __main__._display.drawExpandedCells(self._visitedlist) #@UndefinedVariable
+        return isGoal
 
 def mazeDistance(point1, point2, gameState):
     """

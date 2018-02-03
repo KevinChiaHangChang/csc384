@@ -126,7 +126,7 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    print "Start:", problem.getStartState()
+    #print "Start:", problem.getStartState()
     #print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     #print "Start's successors:", problem.getSuccessors(problem.getStartState())
 
@@ -156,7 +156,7 @@ def breadthFirstSearch(problem):
         closed[path[-1]] = cost
         #Get successors    
         successors = problem.getSuccessors(path[-1])
-        print "Successors:",successors
+        #print "Successors:",successors
         for each_node, each_action, each_cost in successors:
             #Cycle checking
             if each_node not in closed:
