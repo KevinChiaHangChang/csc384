@@ -107,21 +107,24 @@ def depthFirstSearch(problem):
     while not frontier.isEmpty():
         #Remove (path, action list, cost) from frontier
         path, action, cost = frontier.pop()
+        #Always expand
+        #Verify if reach goal state
         if problem.isGoalState(path[-1]):
             return action
-        #Always expand
         #Get successors    
         successors = problem.getSuccessors(path[-1])
         #print "Successors:",successors
         for each_node, each_action, each_cost in successors:
             #Path checking
             if each_node not in path:
+                new_cost = cost + each_cost
                 new_path = list(path)
                 new_path.append(each_node)
                 new_action = list(action)
                 new_action.append(each_action)
-                frontier.push((new_path,new_action,cost+each_cost))
-    return goal_action
+                frontier.push((new_path,new_action,new_cost))
+    #Return no action, if goal state was not found
+    return no_action
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
@@ -133,7 +136,6 @@ def breadthFirstSearch(problem):
     #Based on pseudocode
     #Initialize action list
     no_action = []
-    goal_action = []
     #Get start state    
     start = problem.getStartState()
     start_path = []
@@ -148,24 +150,28 @@ def breadthFirstSearch(problem):
     while not frontier.isEmpty():
         #Remove (path, action list, cost) from frontier
         path, action, cost = frontier.pop()
-        if problem.isGoalState(path[-1]):
-            return action
         #Decide whether or not to expand
         if path[-1] in closed:
             continue
+        #Store cost in closed list
         closed[path[-1]] = cost
-        #Get successors    
+        #Verify if reach goal state
+        if problem.isGoalState(path[-1]):
+            return action
+        #Get successors
         successors = problem.getSuccessors(path[-1])
         #print "Successors:",successors
         for each_node, each_action, each_cost in successors:
             #Cycle checking
             if each_node not in closed:
+                new_cost = cost + each_cost
                 new_path = list(path)
                 new_path.append(each_node)
                 new_action = list(action)
                 new_action.append(each_action)
-                frontier.push((new_path,new_action,cost+each_cost))
-    return goal_action
+                frontier.push((new_path,new_action,new_cost))
+    #Return no action, if goal state was not found
+    return no_action
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
@@ -177,7 +183,6 @@ def uniformCostSearch(problem):
     #Based on pseudocode
     #Initialize action list
     no_action = []
-    goal_action = []
     #Get start state    
     start = problem.getStartState()
     start_path = []
@@ -192,12 +197,14 @@ def uniformCostSearch(problem):
     while not frontier.isEmpty():
         #Remove (path, action list, cost) from frontier
         path, action, cost = frontier.pop()
-        if problem.isGoalState(path[-1]):
-            return action
         #Decide whether or not to expand
         if path[-1] in closed:
             continue
+        #Store cost in closed list
         closed[path[-1]] = cost
+        #Verify if reach goal state
+        if problem.isGoalState(path[-1]):
+            return action
         #Get successors    
         successors = problem.getSuccessors(path[-1])
         #print "Successors:",successors
@@ -210,7 +217,8 @@ def uniformCostSearch(problem):
                 new_action = list(action)
                 new_action.append(each_action)
                 frontier.push((new_path,new_action,new_cost),new_cost)
-    return goal_action
+    #Return no action, if goal state was not found
+    return no_action
 
 def nullHeuristic(state, problem=None):
     """
@@ -229,7 +237,6 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     #Based on pseudocode
     #Initialize action list
     no_action = []
-    goal_action = []
     #Get start state    
     start = problem.getStartState()
     start_path = []
@@ -238,19 +245,19 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     frontier = util.PriorityQueue()
     #Initialize closed dict
     closed = {}
+    closed[start] = 0
     #Frontier entries wil be in the form of (path, action list, cost)
     frontier.push((start_path,no_action,0),0+heuristic(start,problem))
 
     while not frontier.isEmpty():
         #Remove (path, action list, cost) from frontier
         path, action, cost = frontier.pop()
-        #print "New value: " + str(cost)
+        #Decide whether or not to expand
+        if path[-1] in closed and cost > closed[path[-1]]:
+            continue
+        #Verify if reach goal state
         if problem.isGoalState(path[-1]):
             return action
-        #Decide whether or not to expand
-        if path[-1] in closed and cost >= closed[path[-1]]:
-            continue
-        closed[path[-1]] = cost
         #Get successors    
         successors = problem.getSuccessors(path[-1])
         # print "Successors:",successors
@@ -263,6 +270,9 @@ def aStarSearch(problem, heuristic=nullHeuristic):
                 new_action = list(action)
                 new_action.append(each_action)
                 frontier.push((new_path,new_action,new_cost),new_cost+heuristic(each_node,problem))
+                #Store cost in closed list
+                closed[each_node] = new_cost
+    #Return no action, if goal state was not found
     return goal_action
 
 

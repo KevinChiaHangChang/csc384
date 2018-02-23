@@ -1,0 +1,68 @@
+Assignment #1: Search Part II
+Chia-Hang Chang, 1000611260
+
+Question 1
+(1a)    The branching factor is 2, because there are 2 neighbour nodes occupied 
+        by a wall, which prevents Pacman from moving there. 
+(1b)    The branching factor is 4 because Pacman can move (north, south, east, 
+        west) towards all 4 of its neighbour nodes.
+(1c)    The maximum possible depth is O(NxN). If either the Breadth First Search
+        or Depth First Search algorithm is used with no cycle/path checking, the 
+        maximum possible depth is infinite. However, assuming that Depth First 
+        Search with path checking is used, the maximum possible depth is equal 
+        to the length of the solution path. It's possible that the solution path 
+        traverses every node in the maze, which gives the depth NxN.
+
+(2a)    Given that the optimal cost solution is ctotal, the number of nodes in 
+        the optimal path (denote "m") is in the range of 
+        (ctotal/cmax) <= m <= (ctotal/cmin). Now, recall that the successor 
+        function can return maximum 4 successor states (branching factor of 4),
+        since there is no cycle checking. Therefore, to obtain an upper bound, 
+        each node in the optimal path is popped off the OPEN list but pushes 
+        maximum 4 successors, leaving net 3 paths remaining on the OPEN list. 
+        To obtain a lower bound, each node in the optimal path pushes minimum 2
+        successors (next node in optimal path + parent node), leaving net 1 path
+        remaining on the OPEN list. Therefore, the number of nodes on the OPEN 
+        list (denote "n") is in the range of (ctotal/cmax) <= n <= 3*(ctotal/cmin).
+(2b)    Given that there are at most n paths on OPEN list, the number of nodes in
+        the goal path (denote "m") is in the range of n/3 <= m <= n. To explain
+        the lower bound, each node in the goal path is popped off the OPEN list
+        but pushes maximum 4 successors, leaving net 3 paths remaining on the 
+        OPEN list. Basically, we assume the maximum branching factor to obtain the 
+        minimum depth of the search space. Therefore, the minimum number of nodes 
+        in the goal path is n/3. To explain the upper bound, each node in the 
+        goal path pushes minimum 2 successors (next node in optimal path + parent 
+        node), leaving net 1 path remaining on the OPEN list. Here, we assume the 
+        minimum branching factor to obtain the maximum depth of the search space. 
+        Therefore,the maximum number of nodes is n. Applying cost cmin to the 
+        lower bound and cost cmax to the upper bound, the total cost 
+        (denote "ctotal") is in the range of cmin*n/3 <= ctotal <= cmax*n. 
+
+(3a)    Yes, it will yield an optimal solution (original A* evaluation function).
+(3b)    No, the heuristic h(n) has 3 times more weight than the actual cost f(n), 
+        so it might no longer be admissible, monotone, and yield an optimal 
+        solution. With increased weight for heuristic h(n), this evaluation 
+        function becomes more and more like greedy best first search (neglects 
+        actual cost g(n)), which does not guarantee an optimal solution. To find
+        an upper bound for the ratio (cost of returned solution)/(cost 
+        of optimal solution), suppose that we are at the start state (denote "s") 
+        with actual cost g(s) = 0. Then the ratio [g(s) + 3*h(s)]/[g(s) + hopt(s)] 
+        simplifies to 3*h(s)/hopt(s). Since our heuristic is monotone and hence 
+        admissible, h(s) <= hopt(s), so our upper bound is at most 3/1.
+(3c)    Yes, it will yield an optimal solution because, even though the actual 
+        cost g(n) has 3 times more weight than the heuristic h(n), this does not 
+        violate the heuristic's admissibility and monotonicity (still optimistic!).
+        With increased weight for actual g(n), this evaluation function becomes 
+        more and more like uniform cost search (neglects heuristic h(n)), which 
+        guarantees an optimal solution.
+
+(4a)    By saying h1 dominates h2, this means h1 will take longer to compute than 
+        h2, but it is a closer approximation of h*, meaning fewer nodes will be 
+        expanded during the actual search. Therefore, I would recommend Pacman use 
+        h1 when there are strict space constraints but looser time constraints 
+        (more concerned about minimizing space complexity than time complexity).
+(4b)    Conversely, h2 takes less time to compute than h1, but it is a poorer 
+        approximation of h*, meaning more nodes will be expanded during the actual
+        search. I would recommend Pacman use h2 when there are strict time 
+        constraints but looser space constraints (more concerned about minimizing 
+        time complexity than space complexity). 
