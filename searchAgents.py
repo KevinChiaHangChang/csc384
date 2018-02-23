@@ -288,6 +288,7 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
+        #Create start state, consisting of a tuple of starting position + four booleans
         if self.startingPosition == self.corners[0]:
             self.startState = (self.startingPosition,True,False,False,False)
         elif self.startingPosition == self.corners[1]:
@@ -298,11 +299,11 @@ class CornersProblem(search.SearchProblem):
             self.startState = (self.startingPosition,False,False,False,True)
         else:
             self.startState = (self.startingPosition,False,False,False,False)
+        #Create goal state, consisting of a tuple of goal position + four True booleans
         self.goalState = (self.startingPosition,True,True,True,True)
         self.costFn = lambda x : 1
 
-        # For display purposes
-        self.visualize = True
+        #For display purposes
         self._visited, self._visitedlist, self._expanded = {}, [], 0 # DO NOT CHANGE
 
     def getStartState(self):
@@ -318,10 +319,11 @@ class CornersProblem(search.SearchProblem):
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
+        #Verify if all four corners have been reached
         isGoal = (state[1] and state[2] and state[3] and state[4])
         
-        # For display purposes only
-        if isGoal and self.visualize:
+        #For display purposes only
+        if isGoal:
             self._visitedlist.append(state[0])
             import __main__
             if '_display' in dir(__main__):
@@ -357,6 +359,7 @@ class CornersProblem(search.SearchProblem):
             nextx, nexty = int(x + dx), int(y + dy)
             if not self.walls[nextx][nexty]:
                 nextPos = (nextx, nexty)
+                #Check if any of the four corners has been reached
                 found1 = (nextPos == self.corners[0]) or state[1]
                 found2 = (nextPos == self.corners[1]) or state[2]
                 found3 = (nextPos == self.corners[2]) or state[3]
@@ -364,6 +367,7 @@ class CornersProblem(search.SearchProblem):
                 cost = self.costFn(nextPos)
                 successors.append( ((nextPos,found1,found2,found3,found4), action, cost) )
 
+        #Bookkeeping for display purposes
         self._expanded += 1 # DO NOT CHANGE
         if state not in self._visited:
             self._visited[state[0]] = True
@@ -401,22 +405,34 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    # return 0 # Default to trivial solution
+    #Get current position
     curr = state[0]
+    #Initialize total distance
     totalDist = 0
-    #Implement min spanning tree including unvisited corners and current Pacman position
+    #Implement minimum spanning tree from current Pacman position to all unreached corners
+    #This is admissible because, by ignoring the walls, the Manhattan distance is always 
+    #less than or equal to the actual maze distance. The shortest path is taken by going 
+    #to the nearest corner first, not any corner further away, because the corners are on 
+    #four opposite ends of the maze; there is no optimization that can be achieved by first
+    #going to a corner further away. 
     unvisited_corners = [x for x, y in zip(corners,state[1:5]) if y == False]
     while unvisited_corners:
         minDist = 10000
         minIndex = -1
         for index, corner in enumerate(unvisited_corners):
             dist = abs(curr[0]-corner[0])+abs(curr[1]-corner[1])
+            #From current Pacman position, find Manhattan distance to closest unreached corner
             if dist < minDist:
                 minDist = dist
                 minIndex = index
+        #Increment total distance with Manhattan distance to closest unreached corner
         totalDist += minDist
+        #Update current Pacman position to corner position
         curr = unvisited_corners[minIndex]
+        #Remove corner from unreached corners list
         del unvisited_corners[minIndex]
+    #print "Heuristic: " + str(totalDist)
+    #Return total distance
     return totalDist
 
 class AStarCornersAgent(SearchAgent):
@@ -509,42 +525,68 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    #totalDist = 0
-    #Implement min spanning tree including uneaten food and current Pacman position
-    #uneaten_food = foodGrid.asList()
-    #while len(uneaten_food) != 0:
-    #    minDist = 10000
-    #    minIndex = -1
-    #    for index, food in enumerate(uneaten_food):
-    #        dist = abs(position[0]-food[0])+abs(position[1]-food[1])
-    #        if dist < minDist:
-    #            minDist = dist
-    #            minIndex = index
-    #    totalDist += minDist
-    #    position = uneaten_food[minIndex]
-    #    del uneaten_food[minIndex]
-    #return totalDist
+    #Tried minimum spanning tree for food heuristic, was not admissible
+    #It is not admissible because suppose Pacman is close to the centre of a line of 
+    #food dots. By using minimum spanning tree, it will go to the centre of the line,
+    #then either eat all the way to the left end or right end of the line. However, 
+    #it must then traverse half the length of the line a second time, in order to eat
+    #food on the other half of the line.
+    # #Get current position
+    # curr = state[0]
+    # #Initialize total distance
+    # totalDist = 0
+    # #Implement min spanning tree from current Pacman position to all unreached corners
+    # unvisited_corners = [x for x, y in zip(corners,state[1:5]) if y == False]
+    # while unvisited_corners:
+    #     minDist = 10000
+    #     minIndex = -1
+    #     for index, corner in enumerate(unvisited_corners):
+    #         dist = abs(curr[0]-corner[0])+abs(curr[1]-corner[1])
+    #         #From current Pacman position, find Manhattan distance to closest unreached corner
+    #         if dist < minDist:
+    #             minDist = dist
+    #             minIndex = index
+    #     #Increment total distance with Manhattan distance to closest unreached corner
+    #     totalDist += minDist
+    #     #Update current Pacman position to corner position
+    #     curr = unvisited_corners[minIndex]
+    #     #Remove corner from unreached corners list
+    #     del unvisited_corners[minIndex]
+    # #print "Heuristic: " + str(totalDist)
+    # #Return total distance
+    # return totalDist
 
-    #Find distance from each food location to every other food location, then take the max
+    #Find distance from each food dot to every other food dot, take the maximum distance,
+    #then find the distance from current Pacman position to the closer of the two dots
+    #This heuristic is based on the scenario described above, regarding Pacman close to the centre
+    #of a line of food dots. The heuristic will find the maximum maze distance between any two food 
+    #dots, which in this case will be the length of the line; it will then find the closer of the 
+    #two dots for Pacman to traverse to.
     uneaten = foodGrid.asList()
     num_uneaten = len(uneaten)
     gameState = problem.startingGameState
+    #Initialize max distance between any two food dots
     max_dist = 0
+    #Initialize closest distance to either of the above two food dots
     closest = 0
-    #Corner case: only 1 food location left
+    #Corner case: only 1 food dot left
     if num_uneaten == 1:
+        #Return distance from Pacman to food dot
         max_dist = mazeDistance(position,uneaten[0],gameState)
     for i in range(num_uneaten):
         for j in range(num_uneaten):
             if i == j:
                 continue
             dist = mazeDistance(uneaten[i],uneaten[j],gameState)
+            #If new food dot pair has greater distance than previously stored, 
+            #update max distance and Pacman's closest distance to food dot
             if dist > max_dist:
                 max_dist = dist
                 closest1 = mazeDistance(position,uneaten[i],gameState)
                 closest2 = mazeDistance(position,uneaten[j],gameState)
                 closest = closest1 if closest1 < closest2 else closest2
     #print "Heuristic: " + str(max_dist+closest)
+    #Return maximum distance between any two food dots + closest distance to either of the food dots
     return max_dist+closest
 
 class ClosestDotSearchAgent(SearchAgent):
@@ -576,6 +618,7 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
+        #Use breadth first search to find path to closest food dot
         closestPath = search.bfs(problem)
         return closestPath
         
@@ -614,6 +657,7 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x,y = state
 
         "*** YOUR CODE HERE ***"
+        #Verify if food exists at given state
         isGoal = self.food[x][y]
         # For display purposes only
         if isGoal:
