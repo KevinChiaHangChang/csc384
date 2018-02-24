@@ -77,61 +77,37 @@ def prop_BT(csp, newVar=None):
 
 def prop_FC(csp, newVar=None):
     # TODO! IMPLEMENT THIS!
+    # Initialize prune list
     prune_list = []
+    # Initialize constraints list
     if not newVar:
-        # Forward check all unuary constraints
-        for c in csp.get_all_cons():
-            # Check that the constraint has only 1 unassigned variable
-            if c.get_n_unasgn() == 1:
-                vals = []
-                vars = c.get_scope()
-                unasgn_var = c.get_unasgn_vars()[0]
-                # Copy all assigned variable values, unassigned variable will return value None
-                for each_var in vars:
-                    vals.append(each_var.get_assigned_value())
-                # Find index of unassigned variable
-                unasgn_var_idx = vars.index(unasgn_var)
-                # Get domain of unassigned variable
-                domain = unasgn_var.cur_domain()
-                for x in domain:
-                    # Try each value in domain
-                    vals[unasgn_var_idx] = x
-                    if not c.check(vals):
-                        # Prune value from variable domain
-                        unasgn_var.prune_value(x)
-                        # Push into prune list
-                        prune_list.append((unasgn_var,x))
-                # Check if Domain Wipe Out
-                if unasgn_var.cur_domain_size() == 0:
-                    return False, prune_list
-        return True, prune_list
+        # Forward check all unary constraints
+        constraints = csp.get_all_cons()
     else:
         # Forward check all unary constraints with newVar
-        for c in csp.get_cons_with_var(newVar):
-            # Check that the constraint has only 1 unassigned variable
-            if c.get_n_unasgn() == 1:
-                vals = []
-                vars = c.get_scope()
-                unasgn_var = c.get_unasgn_vars()[0]
-                # Copy all assigned variable values, unassigned variable will return value None
-                for each_var in vars:
-                    vals.append(each_var.get_assigned_value())
-                # Find index of unassigned variable
-                unasgn_var_idx = vars.index(unasgn_var)
-                # Get domain of unassigned variable
-                domain = unasgn_var.cur_domain()
-                for x in domain:
-                    # Try each value in domain
-                    vals[unasgn_var_idx] = x
-                    if not c.check(vals):
-                        # Prune value from variable domain
+        constraints = csp.get_cons_with_var(newVar)
+
+    for c in constraints:
+        # Check that the constraint has only 1 unassigned variable
+        if c.get_n_unasgn() == 1:
+            vals = []
+            vars = c.get_scope()
+            # Get unassigned variable
+            unasgn_var = c.get_unasgn_vars()[0]
+            # Get domain of unassigned variable
+            domain = unasgn_var.cur_domain()
+            # For each value, check if variable has support
+            for x in domain:
+                if not c.has_support(unasgn_var,x):
+                    prune_pair = (unasgn_var,x)
+                    # Prune value from variable domain, if not already pruned
+                    if prune_pair not in prune_list:
                         unasgn_var.prune_value(x)
-                        # Push into prune list
-                        prune_list.append((unasgn_var,x))
-                # Check if Domain Wipe Out
-                if unasgn_var.cur_domain_size() == 0:
-                    return False, prune_list
-        return True, prune_list
+                        prune_list.append(prune_pair)
+            # Check if Domain Wipe Out
+            if unasgn_var.cur_domain_size() == 0:
+                return False, prune_list
+    return True, prune_list
 
 def prop_GAC(csp, newVar=None):
     '''
@@ -140,4 +116,45 @@ def prop_GAC(csp, newVar=None):
     newVar on GAC Queue.
     '''
     # TODO! IMPLEMENT THIS!
-    
+    # Initialize prune list
+    prune_list = []
+    # Initialize GAC queue
+    queue_GAC = []
+    if not newVar:
+        # Run GAC on all constraints
+        for c in csp.get_all_cons():
+            queue_GAC.insert(0,c)
+    else:
+        # Run GAC on all constraints with newVar
+        for c in csp.get_cons_with_var(newVar):
+            queue_GAC.insert(0,c)
+
+    while len(queu_GAC) != 0:
+        # For each constraint, get its variables
+        c = queue_GAC.pop()
+        vars = c.get_scope()
+        # For each variable, get its domain
+        for each_var in vars:
+            domain = each_var.cur_domain()
+            # For each value, check if variable has support
+            for x in domain:
+                if not c.has_support(each_var,x):
+                    # Prune value from variable domain, if not already pruned
+                    prune_pair = (each_var,x)
+                    if prune_pair not in prune_list:
+                        each_var.prune_value(x)
+                        prune_list.append(prune_pair)
+                    # Check if Domain Wipe Out
+                    if each_var.cur_domain_size() == 0:
+                        queue_GAC.clear()
+                        return False, prune_list
+                    else:
+                        # Push all constraints with each_var onto the queue, if not already in the queue
+                        for new_c in csp.get_cons_with_var(each_var):
+                            if new_c not in queue_GAC:
+                                queue_GAC.insert(0,new_c)
+    return True, prune_list
+
+
+
+
