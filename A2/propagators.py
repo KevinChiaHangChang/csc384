@@ -129,7 +129,7 @@ def prop_GAC(csp, newVar=None):
         for c in csp.get_cons_with_var(newVar):
             queue_GAC.insert(0,c)
 
-    while len(queu_GAC) != 0:
+    while len(queue_GAC) != 0:
         # For each constraint, get its variables
         c = queue_GAC.pop()
         vars = c.get_scope()

@@ -74,4 +74,28 @@ def val_lcv(csp, var):
     # Return list of values for the given variable, 
     # ordered by the value that rules out the fewest 
     # values in remaining variables
-    pass
+
+    # First get domain of variable
+    domain = var.cur_domain()
+
+    # Now get constraints with given variable
+    cons = csp.get_cons_with_var(var)
+
+    num_prunes = []
+    # For each value of domain, try assigning the value and sum up the number of prunes needed
+    for x in domain:
+        # Try assigning the value
+        var.assign(x)
+        num = 0
+        # For each constraint, get unassigned variables
+        for c in cons:
+            # For each unassigned variable, check how much pruning needs to be done
+            for each_var in c.get_unasgn_vars():
+                for each_val in each_var.cur_domain():
+                    if not c.has_support(each_var,each_val):
+                        num += 1
+        num_prunes.append(num)
+
+    # Sort domain based on num_prunes list
+    sorted_values = [x for _,x in sorted(zip(num_prunes,domain))]
+    return sorted_values

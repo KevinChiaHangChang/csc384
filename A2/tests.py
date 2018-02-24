@@ -168,45 +168,173 @@ class TestStringMethods(unittest.TestCase):
                 bin_count += 1
         self.assertEqual(bin_count, diff_const_count, "Wrong number of binary not equal constraints for binary_ne_grid!")
 
+    # Binary not equal
     @unittest.skipUnless(TEST_MODELS, "Not Testing Models.")
     def test_bne_grid_1(self):
         board = BOARDS[0]
         self.helper_bne_grid(board)
 
+    # Binary not equal
     @unittest.skipUnless(TEST_MODELS, "Not Testing Models.")
     def test_bne_grid_2(self):
         board = BOARDS[1]
         self.helper_bne_grid(board)
 
+    # Binary not equal + FC propagator + MRV heuristic
     @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
     def test_props_1(self):
         board = BOARDS[0]
         self.helper_prop(board)
 
+    # Binary not equal + FC propagator + MRV heuristic
     @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
     def test_props_2(self):
         board = BOARDS[1]
         self.helper_prop(board)
 
+    # Binary not equal + FC propagator + MRV heuristic
     @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
     def test_props_3(self):
         board = BOARDS[2]
         self.helper_prop(board)
 
+    # ADDED TESTS START
+    # Binary not equal + GAC propagator + MRV heuristic
     @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
     def test_props_4(self):
+        board = BOARDS[0]
+        self.helper_prop(board,prop_GAC)
+
+    # Binary not equal + GAC propagator + MRV heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_5(self):
+        board = BOARDS[1]
+        self.helper_prop(board,prop_GAC)
+
+    # Binary not equal + GAC propagator + MRV heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_6(self):
+        board = BOARDS[2]
+        self.helper_prop(board,prop_GAC)
+    # ADDED TESTS STOP
+
+    # ADDED TESTS START
+    # # Binary not equal + FC propagator + DH heuristic
+    # @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    # def test_props_7(self):
+    #     board = BOARDS[0]
+    #     self.helper_prop(board,prop_FC,ord_dh)
+
+    # # Binary not equal + FC propagator + DH heuristic
+    # @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    # def test_props_8(self):
+    #     board = BOARDS[1]
+    #     self.helper_prop(board,prop_FC,ord_dh)
+
+    # # Binary not equal + FC propagator + DH heuristic
+    # @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    # def test_props_9(self):
+    #     board = BOARDS[2]
+    #     self.helper_prop(board,prop_FC,ord_dh)
+    # # ADDED TESTS STOP
+
+    # ADDED TESTS START
+    # Binary not equal + GAC propagator + DH heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_10(self):
+        board = BOARDS[0]
+        self.helper_prop(board,prop_GAC,ord_dh)
+
+    # Binary not equal + GAC propagator + DH heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_11(self):
+        board = BOARDS[1]
+        self.helper_prop(board,prop_GAC,ord_dh)
+
+    # Binary not equal + GAC propagator + DH heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_12(self):
+        board = BOARDS[2]
+        self.helper_prop(board,prop_GAC,ord_dh)
+    # ADDED TESTS STOP
+
+    # ADDED TESTS START
+    # Binary not equal + FC propagator + MRV heuristic
+    # @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    # def test_props_13(self):
+    #     board = BOARDS[3]
+    #     self.helper_prop(board)
+
+    # # Binary not equal + FC propagator + MRV heuristic
+    # @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")   
+    # def test_props_14(self):
+    #     board = BOARDS[4]
+    #     self.helper_prop(board)
+
+    # # Binary not equal + FC propagator + MRV heuristic
+    # @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    # def test_props_15(self):
+    #     board = BOARDS[5]
+    #     self.helper_prop(board)
+    # ADDED TESTS STOP
+
+    # Binary not equal + GAC propagator + MRV heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_16(self):
         board = BOARDS[3]
         self.helper_prop(board, prop_GAC)
 
+    # Binary not equal + GAC propagator + MRV heuristic
     @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")   
-    def test_props_5(self):
+    def test_props_17(self):
         board = BOARDS[4]
         self.helper_prop(board, prop_GAC)
 
+    # Binary not equal + GAC propagator + MRV heuristic
     @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
-    def test_props_6(self):
+    def test_props_18(self):
         board = BOARDS[5]
         self.helper_prop(board, prop_GAC)
+
+    # ADDED TESTS START
+    # Binary not equal + FC propagator + DH heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_22(self):
+        board = BOARDS[3]
+        self.helper_prop(board, prop_FC, ord_dh)
+
+    # Binary not equal + FC propagator + DH heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")   
+    def test_props_23(self):
+        board = BOARDS[4]
+        self.helper_prop(board, prop_FC, ord_dh)
+
+    # Binary not equal + FC propagator + DH heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_24(self):
+        board = BOARDS[5]
+        self.helper_prop(board, prop_FC, ord_dh)
+    # ADDED TESTS STOP
+
+    # ADDED TESTS START
+    # Binary not equal + GAC propagator + DH heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_22(self):
+        board = BOARDS[3]
+        self.helper_prop(board, prop_GAC, ord_dh)
+
+    # Binary not equal + GAC propagator + DH heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")   
+    def test_props_23(self):
+        board = BOARDS[4]
+        self.helper_prop(board, prop_GAC, ord_dh)
+
+    # Binary not equal + GAC propagator + DH heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_24(self):
+        board = BOARDS[5]
+        self.helper_prop(board, prop_GAC, ord_dh)
+    # ADDED TESTS STOP
 
     @unittest.skipUnless(TEST_HEURISTICS, "Not Testing Heuristics.")
     def test_ord_mrv_1(self):
@@ -235,6 +363,75 @@ class TestStringMethods(unittest.TestCase):
         var = []
         var = ord_mrv(simpleCSP)
         self.assertEqual(var.name, simpleCSP.vars[len(simpleCSP.vars)-1].name, "MRV Picked the wrong variable")
+    
+    # ADD TESTS START
+    @unittest.skipUnless(TEST_HEURISTICS, "Not Testing Heuristics.")
+    def test_ord_dh_1(self):
+        # Use in class example
+        domain1 = list(range(10))
+        domain2 = list(range(2))
+        # Define variables
+        f = Variable('f',domain2)
+        t = Variable('t',domain1)
+        u = Variable('u',domain1)
+        r = Variable('r',domain1)
+        w = Variable('w',domain1)
+        o = Variable('o',domain1)
+        c3 = Variable('c3',domain2)
+        c1 = Variable('c1',domain2)
+        c2 = Variable('c2',domain2)
+        # Add variables
+        csp = CSP("Example",[f,t,u,r,w,o,c3,c1,c2])
+        # Add constraints
+        # All-Diff Constraint
+        all_diff = Constraint("All-Diff",[t,w,o,f,u,r])
+        sat_tuples = []
+        for each_tuple in itertools.permutations(domain1,r=6):
+            sat_tuples.append(each_tuple)
+        all_diff.add_satisfying_tuples(sat_tuples)
+        csp.add_constraint(all_diff)
+        # Add numerical constraints
+        num1 = Constraint("Num1",[o,r,c1])
+        sat_tuples = []
+        domains = [domain1,domain1,domain2]
+        for each_tuple in itertools.product(*domains):
+            if 2*each_tuple[0] == each_tuple[1] + 10*each_tuple[2]:
+                sat_tuples.append(each_tuple)
+        num1.add_satisfying_tuples(sat_tuples)
+        csp.add_constraint(num1)
+        num2 = Constraint("Num2",[w,c1,u,c2])
+        sat_tuples = []
+        domains = [domain1,domain2,domain1,domain2]
+        for each_tuple in itertools.product(*domains):
+            if 2*each_tuple[0] + each_tuple[1] == each_tuple[2] + 10*each_tuple[3]:
+                sat_tuples.append(each_tuple)
+        num2.add_satisfying_tuples(sat_tuples)
+        csp.add_constraint(num2)
+        num3 = Constraint("Num3",[t,c2,o,c3])
+        sat_tuples = []
+        domains = [domain1,domain2,domain1,domain2]
+        for each_tuple in itertools.product(*domains):
+            if 2*each_tuple[0] + each_tuple[1] == each_tuple[2] + 10*each_tuple[3]:
+                sat_tuples.append(each_tuple)
+        num3.add_satisfying_tuples(sat_tuples)
+        csp.add_constraint(num3)
+        num4 = Constraint("Num4",[f,c3])
+        sat_tuples = []
+        for each_tuple in itertools.permutations(domain2, r=2):
+            sat_tuples.append(each_tuple)
+        num4.add_satisfying_tuples(sat_tuples)
+        csp.add_constraint(num4)
+        var = []
+        var = ord_dh(csp)
+        self.assertEqual(var.name, o.name, "DH Picked the wrong variable")
+    # ADD TESTS STOP
+
+    # ADD TESTS START
+    @unittest.skipUnless(TEST_HEURISTICS, "Not Testing Hueristics.")
+    def test_val_lcv_1(self):
+        # TODO
+        self.assertTrue(True)
+    # ADD TESTS STOP
 
     ##Tests FC after the first queen is placed in position 1.
     @unittest.skipUnless(TEST_PROPAGATORS, "Not Testing Propagotors.")
@@ -247,7 +444,20 @@ class TestStringMethods(unittest.TestCase):
         var_domain = [x.cur_domain() for x in curr_vars]
         for i in range(len(curr_vars)):
             self.assertEqual(var_domain[i], answer[i], "Failed simple FC test: variable domains don't match expected results")
-    
+
+    # ADD TESTS START
+    ## Tests GAC after the first queen is placed in position 2
+    def test_simple_GAC(self):
+        queens = nQueens(8)
+        curr_vars = queens.get_all_vars()
+        curr_vars[0].assign(1)
+        propagators.prop_GAC(queens,newVar=curr_vars[0])
+        answer = [[1],[3,4,5,6,7,8],[2,4,5,6,7,8],[2,3,5,6,7,8],[2,3,4,6,7,8],[2,3,4,5,7,8],[2,3,4,5,6,8],[2,3,4,5,6,7]]
+        var_domain = [x.cur_domain() for x in curr_vars]
+        for i in range(len(curr_vars)):
+            self.assertEqual(var_domain[i], answer[i], "Failed simple GAC test: variable domains don't match expected results")
+    # ADD TESTS STOP
+
     @unittest.skipUnless(TEST_PROPAGATORS, "Not Testing Propagotors.")
     def test_DWO_FC(self):
         queens = nQueens(6)
@@ -262,6 +472,20 @@ class TestStringMethods(unittest.TestCase):
         pruned = propagators.prop_FC(queens,newVar=cur_var[4])
 
         self.assertFalse(pruned[0], "Failed a FC test: should have resulted in a DWO")
+
+    # ADD TESTS START
+    @unittest.skipUnless(TEST_PROPAGATORS, "Not Testing Propagotors.")
+    def test_DWO_GAC(self):
+        queens = nQueens(6)
+        cur_var = queens.get_all_vars()
+        cur_var[0].assign(2)
+        pruned = propagators.prop_GAC(queens,newVar=cur_var[0])
+        self.assertTrue(pruned[0], "Failed a FC test: should have resulted in a DWO")
+        cur_var[1].assign(5)
+        pruned = propagators.prop_GAC(queens,newVar=cur_var[1])
+
+        self.assertFalse(pruned[0], "Failed a FC test: should a resulted in a DWO")
+    # ADD TESTS STOP
 
 if __name__ == '__main__':
     unittest.main()
