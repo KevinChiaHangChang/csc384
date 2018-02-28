@@ -276,31 +276,72 @@ def kenken_csp_model(kenken_grid):
             con.add_satisfying_tuples(sat_tuples)
             cons.append(con)
 
-    # Now generate n-ary constraints
-    # Generate all tuples beforehand
-    sat_tuples = []
-    for each_tuple in itertools.permutations(domain):
-        sat_tuples.append(each_tuple)
-    # Row constraint
-    for i in range(1,dim+1):
-        con = Constraint("All-Diff(Row{})".format(i),var_array[i-1])
+    # # Now generate n-ary constraints
+    # # Generate all tuples beforehand
+    # sat_tuples = []
+    # for each_tuple in itertools.permutations(domain):
+    #     sat_tuples.append(each_tuple)
+    # # Row constraint
+    # for i in range(1,dim+1):
+    #     con = Constraint("All-Diff(Row{})".format(i),var_array[i-1])
 
-        # Generate satisfying tuples based on domain
-        # Add satisfying tuples to constraint
-        con.add_satisfying_tuples(sat_tuples)
-        cons.append(con)
+    #     # Generate satisfying tuples based on domain
+    #     # Add satisfying tuples to constraint
+    #     con.add_satisfying_tuples(sat_tuples)
+    #     cons.append(con)
     
-    # Column constraint
-    for j in range(1,dim+1):
-        col = []
-        for i in range(1,dim+1):
-            col.append(var_array[i-1][j-1])
-        con = Constraint("All-Diff(Column{})".format(j),col)
+    # # Column constraint
+    # for j in range(1,dim+1):
+    #     col = []
+    #     for i in range(1,dim+1):
+    #         col.append(var_array[i-1][j-1])
+    #     con = Constraint("All-Diff(Column{})".format(j),col)
 
-        # Generate satisfying tuples based on domain
-        # Add satisfying tuples to constraint
-        con.add_satisfying_tuples(sat_tuples)
-        cons.append(con)
+    #     # Generate satisfying tuples based on domain
+    #     # Add satisfying tuples to constraint
+    #     con.add_satisfying_tuples(sat_tuples)
+    #     cons.append(con)
+
+    # Now generate binary not-equal constraints
+    for i in range(1,dim+1):
+        for j in range(1,dim+1):
+            # Column constraint
+            for k in range(i,dim+1):
+                # Make sure not to add the same constraint twice
+                if k <= i:
+                    continue
+                # Initialize new column constraint
+                var_a = var_array[i-1][j-1]
+                var_b = var_array[k-1][j-1]
+                con = Constraint("Binary(V{}{},V{}{})".format(i,j,k,j), [var_a,var_b])
+
+                # Generate satisfying tuples based on domain of the 2 variables
+                sat_tuples = []
+                for pair in itertools.product(var_a.domain(), var_b.domain()):
+                    if pair[0] != pair[1]:
+                        sat_tuples.append(pair)
+                
+                # Add satisfying tuples to constraint
+                con.add_satisfying_tuples(sat_tuples)
+                cons.append(con)
+
+            # Row constraint
+            for k in range(j,dim+1):
+                if k <= j:
+                    continue
+                var_a = var_array[i-1][j-1]
+                var_b = var_array[i-1][k-1]
+                con = Constraint("Binary(V{}{},V{}{})".format(i,j,i,k), [var_a,var_b])
+
+                # Generate satisfying tuples based on domain of the 2 variables
+                sat_tuples = []
+                for pair in itertools.product(var_a.domain(), var_b.domain()):
+                    if pair[0] != pair[1]:
+                        sat_tuples.append(pair)
+                
+                # Add satisfying tuples to constraint
+                con.add_satisfying_tuples(sat_tuples)
+                cons.append(con)
 
     # Initialize CSP
     csp = CSP("Kenken")

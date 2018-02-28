@@ -95,6 +95,8 @@ def val_lcv(csp, var):
                     if not c.has_support(each_var,each_val):
                         num += 1
         num_prunes.append(num)
+        # Remember to unassign the variable
+        var.unassign()
 
     # Sort domain based on num_prunes list
     sorted_values = [x for _,x in sorted(zip(num_prunes,domain))]

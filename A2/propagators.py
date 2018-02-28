@@ -80,6 +80,7 @@ def prop_FC(csp, newVar=None):
     # Initialize prune list
     prune_list = []
     # Initialize constraints list
+    constraints = []
     if not newVar:
         # Forward check all unary constraints
         constraints = csp.get_all_cons()
@@ -90,8 +91,6 @@ def prop_FC(csp, newVar=None):
     for c in constraints:
         # Check that the constraint has only 1 unassigned variable
         if c.get_n_unasgn() == 1:
-            vals = []
-            vars = c.get_scope()
             # Get unassigned variable
             unasgn_var = c.get_unasgn_vars()[0]
             # Get domain of unassigned variable

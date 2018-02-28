@@ -147,11 +147,27 @@ TEST_HEURISTICS  = True
 TEST_PROPAGATORS = True
 
 class TestStringMethods(unittest.TestCase):
-    def helper_prop(self, board, prop=prop_FC, var_ord=ord_mrv):
+    def helper_prop_none(self, board, prop=prop_FC, var_ord=None, val_lcv=None):
         csp, var_array = kenken_csp_model(board)
         solver = BT(csp)
         solver.quiet()
-        solver.bt_search(prop, var_ord)
+        solver.bt_search(prop, var_ord, val_lcv)
+        self.assertTrue(check_cages(var_array, board), "Incorect value in a cage!")
+        self.assertTrue(check_diff(var_array, board), "Repeated value in a row or column!")
+
+    def helper_prop(self, board, prop=prop_FC, var_ord=ord_mrv, val_lcv=None):
+        csp, var_array = kenken_csp_model(board)
+        solver = BT(csp)
+        solver.quiet()
+        solver.bt_search(prop, var_ord, val_lcv)
+        self.assertTrue(check_cages(var_array, board), "Incorect value in a cage!")
+        self.assertTrue(check_diff(var_array, board), "Repeated value in a row or column!")
+
+    def helper_prop_lcv(self, board, prop=prop_FC, var_ord=ord_mrv, val_lcv=val_lcv):
+        csp, var_array = kenken_csp_model(board)
+        solver = BT(csp)
+        solver.quiet()
+        solver.bt_search(prop, var_ord, val_lcv)
         self.assertTrue(check_cages(var_array, board), "Incorect value in a cage!")
         self.assertTrue(check_diff(var_array, board), "Repeated value in a row or column!")
 
@@ -179,6 +195,80 @@ class TestStringMethods(unittest.TestCase):
     def test_bne_grid_2(self):
         board = BOARDS[1]
         self.helper_bne_grid(board)
+
+    # ADDED TESTS START
+    # Binary not equal + FC propagator
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_none_1(self):
+        board = BOARDS[0]
+        self.helper_prop_none(board)
+
+    # Binary not equal + FC propagator
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_none_2(self):
+        board = BOARDS[1]
+        self.helper_prop_none(board)
+
+    # Binary not equal + FC propagator
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_none_3(self):
+        board = BOARDS[2]
+        self.helper_prop_none(board)
+
+    # Binary not equal + GAC propagator
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_none_4(self):
+        board = BOARDS[0]
+        self.helper_prop_none(board,prop_GAC)
+
+    # Binary not equal + GAC propagator
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_none_5(self):
+        board = BOARDS[1]
+        self.helper_prop_none(board,prop_GAC)
+
+    # Binary not equal + GAC propagator
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_none_6(self):
+        board = BOARDS[2]
+        self.helper_prop_none(board,prop_GAC)
+
+    # Binary not equal + FC propagator
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_none_7(self):
+        board = BOARDS[3]
+        self.helper_prop_none(board)
+
+    # Binary not equal + FC propagator
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_none_8(self):
+        board = BOARDS[4]
+        self.helper_prop_none(board)
+
+    # Binary not equal + FC propagator
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_none_9(self):
+        board = BOARDS[5]
+        self.helper_prop_none(board)
+
+    # Binary not equal + GAC propagator
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_none_10(self):
+        board = BOARDS[3]
+        self.helper_prop_none(board,prop_GAC)
+
+    # Binary not equal + GAC propagator
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_none_11(self):
+        board = BOARDS[4]
+        self.helper_prop_none(board,prop_GAC)
+
+    # Binary not equal + GAC propagator
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_none_12(self):
+        board = BOARDS[5]
+        self.helper_prop_none(board,prop_GAC)
+    # ADDED TESTS STOP
 
     # Binary not equal + FC propagator + MRV heuristic
     @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
@@ -219,23 +309,23 @@ class TestStringMethods(unittest.TestCase):
     # ADDED TESTS STOP
 
     # ADDED TESTS START
-    # # Binary not equal + FC propagator + DH heuristic
-    # @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
-    # def test_props_7(self):
-    #     board = BOARDS[0]
-    #     self.helper_prop(board,prop_FC,ord_dh)
+    # Binary not equal + FC propagator + DH heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_7(self):
+        board = BOARDS[0]
+        self.helper_prop(board,prop_FC,ord_dh)
 
-    # # Binary not equal + FC propagator + DH heuristic
-    # @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
-    # def test_props_8(self):
-    #     board = BOARDS[1]
-    #     self.helper_prop(board,prop_FC,ord_dh)
+    # Binary not equal + FC propagator + DH heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_8(self):
+        board = BOARDS[1]
+        self.helper_prop(board,prop_FC,ord_dh)
 
-    # # Binary not equal + FC propagator + DH heuristic
-    # @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
-    # def test_props_9(self):
-    #     board = BOARDS[2]
-    #     self.helper_prop(board,prop_FC,ord_dh)
+    # Binary not equal + FC propagator + DH heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_9(self):
+        board = BOARDS[2]
+        self.helper_prop(board,prop_FC,ord_dh)
     # # ADDED TESTS STOP
 
     # ADDED TESTS START
@@ -260,22 +350,22 @@ class TestStringMethods(unittest.TestCase):
 
     # ADDED TESTS START
     # Binary not equal + FC propagator + MRV heuristic
-    # @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
-    # def test_props_13(self):
-    #     board = BOARDS[3]
-    #     self.helper_prop(board)
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_13(self):
+        board = BOARDS[3]
+        self.helper_prop(board)
 
-    # # Binary not equal + FC propagator + MRV heuristic
-    # @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")   
-    # def test_props_14(self):
-    #     board = BOARDS[4]
-    #     self.helper_prop(board)
+    # Binary not equal + FC propagator + MRV heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")   
+    def test_props_14(self):
+        board = BOARDS[4]
+        self.helper_prop(board)
 
-    # # Binary not equal + FC propagator + MRV heuristic
-    # @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
-    # def test_props_15(self):
-    #     board = BOARDS[5]
-    #     self.helper_prop(board)
+    # Binary not equal + FC propagator + MRV heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_15(self):
+        board = BOARDS[5]
+        self.helper_prop(board)
     # ADDED TESTS STOP
 
     # Binary not equal + GAC propagator + MRV heuristic
@@ -298,22 +388,22 @@ class TestStringMethods(unittest.TestCase):
 
     # ADDED TESTS START
     # Binary not equal + FC propagator + DH heuristic
-    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
-    def test_props_22(self):
-        board = BOARDS[3]
-        self.helper_prop(board, prop_FC, ord_dh)
+    # @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    # def test_props_19(self):
+    #     board = BOARDS[3]
+    #     self.helper_prop(board, prop_FC, ord_dh)
 
-    # Binary not equal + FC propagator + DH heuristic
-    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")   
-    def test_props_23(self):
-        board = BOARDS[4]
-        self.helper_prop(board, prop_FC, ord_dh)
+    # # Binary not equal + FC propagator + DH heuristic
+    # @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")   
+    # def test_props_20(self):
+    #     board = BOARDS[4]
+    #     self.helper_prop(board, prop_FC, ord_dh)
 
-    # Binary not equal + FC propagator + DH heuristic
-    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
-    def test_props_24(self):
-        board = BOARDS[5]
-        self.helper_prop(board, prop_FC, ord_dh)
+    # # Binary not equal + FC propagator + DH heuristic
+    # @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    # def test_props_21(self):
+    #     board = BOARDS[5]
+    #     self.helper_prop(board, prop_FC, ord_dh)
     # ADDED TESTS STOP
 
     # ADDED TESTS START
@@ -334,6 +424,117 @@ class TestStringMethods(unittest.TestCase):
     def test_props_24(self):
         board = BOARDS[5]
         self.helper_prop(board, prop_GAC, ord_dh)
+    # ADDED TESTS STOP
+
+    # ADDED TESTS START
+    # Binary not equal + FC propagator + MRV heuristic + LCV heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_lcv_1(self):
+        board = BOARDS[0]
+        self.helper_prop_lcv(board)
+
+    # Binary not equal + FC propagator + MRV heuristic + LCV heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_lcv_2(self):
+        board = BOARDS[1]
+        self.helper_prop_lcv(board)
+
+    # Binary not equal + FC propagator + MRV heuristic + LCV heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_lcv_3(self):
+        board = BOARDS[2]
+        self.helper_prop_lcv(board)
+
+    # Binary not equal + GAC propagator + MRV heuristic + LCV heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_lcv_4(self):
+        board = BOARDS[0]
+        self.helper_prop_lcv(board,prop_GAC)
+
+    # Binary not equal + GAC propagator + MRV heuristic + LCV heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_lcv_5(self):
+        board = BOARDS[1]
+        self.helper_prop_lcv(board,prop_GAC)
+
+    # Binary not equal + GAC propagator + MRV heuristic + LCV heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_lcv_6(self):
+        board = BOARDS[2]
+        self.helper_prop_lcv(board,prop_GAC)
+    
+    # Binary not equal + FC propagator + DH heuristic + LCV heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_lcv_7(self):
+        board = BOARDS[0]
+        self.helper_prop(board,prop_FC,ord_dh)
+
+    # Binary not equal + FC propagator + DH heuristic + LCV heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_lcv_8(self):
+        board = BOARDS[1]
+        self.helper_prop(board,prop_FC,ord_dh)
+
+    # Binary not equal + FC propagator + DH heuristic + LCV heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_lcv_9(self):
+        board = BOARDS[2]
+        self.helper_prop(board,prop_FC,ord_dh)
+
+    # Binary not equal + GAC propagator + DH heuristic + LCV heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_lcv_10(self):
+        board = BOARDS[0]
+        self.helper_prop(board,prop_GAC,ord_dh)
+
+    # Binary not equal + GAC propagator + DH heuristic + LCV heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_lcv_11(self):
+        board = BOARDS[1]
+        self.helper_prop(board,prop_GAC,ord_dh)
+
+    # Binary not equal + GAC propagator + DH heuristic + LCV heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_lcv_12(self):
+        board = BOARDS[2]
+        self.helper_prop(board,prop_GAC,ord_dh)
+
+    # Binary not equal + FC propagator + MRV heuristic + LCV heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_lcv_13(self):
+        board = BOARDS[3]
+        self.helper_prop_lcv(board)
+
+    # Binary not equal + FC propagator + MRV heuristic + LCV heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_lcv_14(self):
+        board = BOARDS[4]
+        self.helper_prop_lcv(board)
+
+    # Binary not equal + FC propagator + MRV heuristic + LCV heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_lcv_15(self):
+        board = BOARDS[5]
+        self.helper_prop_lcv(board)
+
+    # Binary not equal + GAC propagator + MRV heuristic + LCV heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_lcv_16(self):
+        board = BOARDS[3]
+        self.helper_prop_lcv(board,prop_GAC)
+
+    # Binary not equal + GAC propagator + MRV heuristic + LCV heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_lcv_17(self):
+        board = BOARDS[4]
+        self.helper_prop_lcv(board,prop_GAC)
+
+    # Binary not equal + GAC propagator + MRV heuristic + LCV heuristic
+    @unittest.skipUnless(TEST_PROPAGATORS and TEST_MODELS, "Not Testing Propagators and Models.")
+    def test_props_lcv_18(self):
+        board = BOARDS[5]
+        self.helper_prop_lcv(board,prop_GAC)
+    
     # ADDED TESTS STOP
 
     @unittest.skipUnless(TEST_HEURISTICS, "Not Testing Heuristics.")
