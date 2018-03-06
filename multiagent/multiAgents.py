@@ -15,6 +15,7 @@
 from util import manhattanDistance
 from game import Directions
 import random, util
+import sys
 
 from game import Agent
 
@@ -74,7 +75,47 @@ class ReflexAgent(Agent):
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
         "*** YOUR CODE HERE ***"
-        return successorGameState.getScore()
+        print "New position:%s" % (newPos,)
+        # return successorGameState.getScore()
+        # take reciprocal of distance to food, and (if scared ghosts) distance (or reciprocal) to ghosts
+        # initialize score
+        score = 0
+        # check if successor state is win state
+        if successorGameState.isWin():
+          return sys.maxint
+
+        # find minimum Manhattan distance to food
+        nearestFoodDist = sys.maxint
+        for eachFood in newFood.asList():
+          tmpDist = manhattanDistance(newPos,eachFood)
+          if tmpDist < nearestFoodDist:
+            nearestFoodDist = tmpDist
+        # take reciprocal
+        score += (1/nearestFoodDist)*10
+        print "Minimum distance to food: " + str(nearestFoodDist)
+
+        # find change in amount of food
+        if successorGameState.getNumFood() < currentGameState.getNumFood():
+          score += 100
+        
+        # find minimum Manhattan distance to ghosts
+        nearestGhostDist = sys.maxint
+        for eachGhost in newGhostStates:
+          tmpDist = manhattanDistance(newPos,eachGhost.getPosition())
+          if not nearestGhostDist or tmpDist < nearestGhostDist:
+            nearestGhostDist = tmpDist
+        print "Minimum distance to ghost: " + str(nearestGhostDist)
+        # be careful about division by zero
+        if nearestGhostDist == 0:
+          score -= (sys.maxint-100)
+        else:
+          score -= (1/nearestGhostDist)*20
+
+        # penalize STOP action
+        if action == Directions.STOP:
+          score -= 5
+
+        return score
 
 def scoreEvaluationFunction(currentGameState):
     """
