@@ -74,93 +74,53 @@ class ReflexAgent(Agent):
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
         "*** YOUR CODE HERE ***"
-        # print "New position:%s" % (newPos,)
-        # IMPLEMENTION 1
-        # take reciprocal of distance to food, and (if scared ghosts) distance (or reciprocal) to ghosts
-        # initialize score
+        # IMPLEMENTATION 1
+        # get information about current state
+        currPos = currentGameState.getPacmanPosition()
+        currFood = currentGameState.getFood()
+
         score = 0.0
-        # check if successor state is win state
-        if successorGameState.isWin():
-          return float('inf')
 
-        # find minimum Manhattan distance to food
-        nearestFoodDist = float('inf')
-        for eachFood in newFood.asList():
-          if successorGameState.hasFood(eachFood[0],eachFood[1]):
-            tmpDist = manhattanDistance(newPos,eachFood)
-            # print "Tmp distance: " + str(tmpDist)
-            if tmpDist < nearestFoodDist:
-              nearestFoodDist = tmpDist
-        # take reciprocal
-        # print "Nearest food distance: " + str(nearestFoodDist)
-        # print "Nearest food distance reciprocal: " + str(float(1/nearestFoodDist))
-        score += (1.0/nearestFoodDist)*5.0
-        # print "Score: " + str(score)
-
-        # find change in amount of food
-        if successorGameState.getNumFood() < currentGameState.getNumFood():
-          score += 1.0
-        
-        # find minimum Manhattan distance to ghosts
-        nearestGhostDist = float('inf')
+        # check if next state brings Pacman closer to ghosts
+        # find current state minimum distance to ghosts
+        currGhostDist = float('inf')
+        for eachGhost in currentGameState.getGhostStates():
+          tmpDist = manhattanDistance(currPos,eachGhost.getPosition())
+          currGhostDist = min(currGhostDist,tmpDist)
+        # find next state minimum distance to ghosts
+        newGhostDist = float('inf')
         for eachGhost in newGhostStates:
           tmpDist = manhattanDistance(newPos,eachGhost.getPosition())
-          if tmpDist < nearestGhostDist:
-            nearestGhostDist = tmpDist
-        print "Minimum distance to ghost: " + str(1/nearestGhostDist)
-        # be careful about division by zero
-        if nearestGhostDist == 0:
-          score -= -float('inf')
-        else:
-          # take reciprocal
-          score -= (1.0/nearestGhostDist)*10.0
-
-        print "New score: " + str(score)
-
-        # penalize STOP action
-        if action == Directions.STOP:
-          score -= 5.0
-
-        # find minimum Manhattan distance to capsules
-        newCapsules = successorGameState.getCapsules()
-        nearestCapsuleDist = float('inf')
-        for eachCapsule in newCapsules:
-          tmpDist = manhattanDistance(newPos,eachCapsule)
-          if tmpDist < nearestCapsuleDist:
-            nearestCapsuleDist = tmpDist
-        # take reciprocal
-        score += (1.0/nearestCapsuleDist)*5.0
-
-        # find change in amount of capsules
-        if len(newCapsules) < len(currentGameState.getCapsules()):
-          score += 50.0
-
+          newGhostDist = min(newGhostDist,tmpDist)
+        # if newGhostDist > currGhostDist:
+        #   score += 2.0/newGhostDist
+        print "Current ghost distance: " + str(currGhostDist) + " New ghost distance: " + str(newGhostDist)
+        if newGhostDist == 0.0:
+          score -= 10.0
+        elif newGhostDist < currGhostDist:
+          score -= 2.0/newGhostDist
+        elif newGhostDist > currGhostDist:
+          score += 1.0/currGhostDist
+        print "Score: " + str(score)
+        
+        # check if next state brings Pacman closer to food
+        if len(newFood.asList()) < len(currFood.asList()):
+          score += 5.0
+        # print "Score: " + str(score)
+        # find current state minimum distance to food
+        currFoodDist = float('inf')
+        for eachFood in currFood.asList():
+          tmpDist = manhattanDistance(currPos,eachFood)
+          currFoodDist = min(currFoodDist,tmpDist)
+        # find next state minimum distance to food
+        newFoodDist = float('inf')
+        for eachFood in newFood.asList():
+          tmpDist = manhattanDistance(newPos,eachFood)
+          newFoodDist = min(newFoodDist,tmpDist)
+        if newFoodDist < currFoodDist:
+          score += 3.0/currFoodDist
+        # print "Score: " + str(score)
         return score
-
-        # Implementation 2
-        # find minimum distance to ghost
-        # nearestGhostDist = sys.maxint
-        # for eachGhost in newGhostStates:
-        #   tmpDist = manhattanDistance(newPos,eachGhost.getPosition())
-        #   if tmpDist < nearestGhostDist:
-        #     nearestGhostDist = tmpDist
-        # # find average distance to food
-        # foodDist = []
-        # for eachFood in newFood.asList():
-        #   tmpDist = manhattanDistance(newPos,eachFood)
-        #   foodDist.append(tmpDist)
-        # avgFoodDist = sum(foodDist)/len(foodDist) if foodDist else 1
-        # if avgFoodDist == 0:
-        #   avgFoodDist = 1
-        # # find surrounding food
-        # nearbyFood = 0
-        # m = len(list(newFood))
-        # m = len(list(newFood[0]))
-        # for x in range(newPos[0]-2,newPos[0]+3):
-        #   for y in range(newPos[1]-2,newPos[1]+3):
-        #     if (x >= 0 and x < m) and (y >= 0 and y < m) and newFood[x][y]:
-        #       nearbyFood += 1
-        # score = 4.0/nearestGhostDist + 5.0/avgFoodDist + nearbyFood + successorGameState.getScore()
 
 
 def scoreEvaluationFunction(currentGameState):
