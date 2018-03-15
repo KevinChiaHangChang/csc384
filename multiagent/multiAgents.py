@@ -100,7 +100,7 @@ class ReflexAgent(Agent):
         elif newGhostDist < currGhostDist:
           score -= 2.0/newGhostDist
         elif newGhostDist > currGhostDist:
-          score += 1.0/currGhostDist
+          score += 0.5/currGhostDist
         print "Score: " + str(score)
         
         # check if next state brings Pacman closer to food
