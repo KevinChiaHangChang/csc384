@@ -94,14 +94,14 @@ class ReflexAgent(Agent):
           newGhostDist = min(newGhostDist,tmpDist)
         # if newGhostDist > currGhostDist:
         #   score += 2.0/newGhostDist
-        print "Current ghost distance: " + str(currGhostDist) + " New ghost distance: " + str(newGhostDist)
+        # print "Current ghost distance: " + str(currGhostDist) + " New ghost distance: " + str(newGhostDist)
         if newGhostDist == 0.0:
           score -= 10.0
         elif newGhostDist < currGhostDist:
           score -= 2.0/newGhostDist
         elif newGhostDist > currGhostDist:
           score += 0.5/currGhostDist
-        print "Score: " + str(score)
+        # print "Score: " + str(score)
         
         # check if next state brings Pacman closer to food
         if len(newFood.asList()) < len(currFood.asList()):
