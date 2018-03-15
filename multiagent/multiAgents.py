@@ -280,10 +280,11 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
           for each_action in actions:
             successorState = gameState.generateSuccessor(0,each_action)
             maxScore = max(maxScore, getMin(successorState,1,currDepth,alpha,beta))
-            # Pruning occurs
-            if beta <= maxScore:
-              return maxScore
+            # update alpha if necessary
             alpha = max(maxScore,alpha)
+            # pruning occurs
+            if beta <= alpha:
+              return maxScore
           return maxScore
         
         def getMin(gameState, agentIndex, currDepth, alpha, beta):
@@ -296,18 +297,20 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
             for each_action in actions:
               successorState = gameState.generateSuccessor(agentIndex,each_action)
               minScore = min(minScore, getMax(successorState,currDepth-1,alpha,beta))
-              # Pruning occurs
-              if minScore <= alpha:
-                return minScore
+              # update beta if necessary
               beta = min(minScore,beta)
+              # pruning occurs
+              if beta <= alpha:
+                return minScore
           else:
             for each_action in actions:
               successorState = gameState.generateSuccessor(agentIndex,each_action)
               minScore = min(minScore, getMin(successorState,agentIndex+1,currDepth,alpha,beta))
-              # Pruning occurs
-              if minScore <= alpha:
-                return minScore
+              # update beta if necessary
               beta = min(minScore,beta)
+              # pruning occurs
+              if beta <= alpha:
+                return minScore
           return minScore
 
         actions = gameState.getLegalActions(0)
@@ -319,9 +322,12 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
           successorState = gameState.generateSuccessor(0,each_action)
           prevScore = maxScore
           maxScore = max(maxScore,getMin(successorState,1,self.depth,alpha,beta))
-          if beta <= maxScore:
-            return each_action
+          # update alpha if necessary
           alpha = max(maxScore,alpha)
+          # pruning occurs
+          if beta <= alpha:
+            return each_action
+          # no pruning, need to check if current score is higher than previous score
           if maxScore > prevScore:
             optimal_action = each_action
         return optimal_action
