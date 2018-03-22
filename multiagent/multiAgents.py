@@ -443,59 +443,50 @@ def betterEvaluationFunction(currentGameState):
     """
     "*** YOUR CODE HERE ***"
     # util.raiseNotDefined()
-    # IMPLEMENTATION 1
     # get information about current state
     currPos = currentGameState.getPacmanPosition()
-    currFood = currentGameState.getFood()
+    currFood = currentGameState.getFood().asList()
     # legalActions = currentGameState.getLegalPacmanActions()
 
     score = currentGameState.getScore()
+    # score = 0.0
     if currentGameState.isWin():
       return float('inf')
     elif currentGameState.isLose():
       return -(float('inf'))
 
+    # IMPLEMENTATION 1
     # check if next state brings Pacman closer to ghosts
     # find current state minimum distance to ghosts
-    currGhostDist = float('inf')
-    for eachGhost in currentGameState.getGhostStates():
-      tmpDist = manhattanDistance(currPos,eachGhost.getPosition())
-      currGhostDist = min(currGhostDist,tmpDist)
-    # find next state minimum distance to ghosts
-    # newGhostDist = float('inf')
-    # for eachGhost in newGhostStates:
-    #   tmpDist = manhattanDistance(newPos,eachGhost.getPosition())
-    #   newGhostDist = min(newGhostDist,tmpDist)
-    # if newGhostDist > currGhostDist:
-    #   score += 2.0/newGhostDist
-    # print "Current ghost distance: " + str(currGhostDist) + " New ghost distance: " + str(newGhostDist)
-    # if newGhostDist == 0.0:
-    #   score -= 10.0
-    # elif newGhostDist < currGhostDist:
-    #   score -= 2.0/newGhostDist
-    # elif newGhostDist > currGhostDist:
-    #   score += 0.5/currGhostDist
-    if currGhostDist == 0:
-      score -= 10.0
-    else:
-      score -= 2.0/currGhostDist
+    # currGhostDist = float('inf')
+    # for eachGhost in currentGameState.getGhostStates():
+    #   tmpDist = manhattanDistance(currPos,eachGhost.getPosition())
+    #   currGhostDist = min(currGhostDist,tmpDist)
+    # if currGhostDist == 0.0:
+    #   score -= 100.0
+    # else:
+    #   if currGhostDist < 5.0:
+    #     score -= 5.0/currGhostDist
     # print "Score: " + str(score)
-    # return score
     
     # check if next state brings Pacman closer to food
     # if len(newFood.asList()) < len(currFood.asList()):
     #   score += 5.0
     # print "Score: " + str(score)
     # find current state minimum distance to food
-    currFoodDist = float('inf')
-    for eachFood in currFood.asList():
-      tmpDist = manhattanDistance(currPos,eachFood)
-      currFoodDist = min(currFoodDist,tmpDist)
-    if currFoodDist == 0:
-      score += 7.5
-    else:
-      score += 1.5/currFoodDist
-    score -= 4.0*len(currFood.asList())
+    # currFoodDist = float('inf')
+    # numFood = len(currFood.asList())
+    # if currPos in currFood.asList():
+    #   numFood -= 1
+    # for eachFood in currFood.asList():
+    #   tmpDist = manhattanDistance(currPos,eachFood)
+    #   currFoodDist = min(currFoodDist,tmpDist)
+    # # if currFoodDist == 0.0:
+    # #   score += 100.0
+    # if currFoodDist != 0:
+    #   score -= currFoodDist
+    #   print(str(5.0/currFoodDist))
+    # score -= 4.0*numFood
     # find next state minimum distance to food
     # newFoodDist = float('inf')
     # for eachFood in newFood.asList():
@@ -503,10 +494,46 @@ def betterEvaluationFunction(currentGameState):
     #   newFoodDist = min(newFoodDist,tmpDist)
     # if newFoodDist < currFoodDist:
     #   score += 3.0/currFoodDist
-    print "Score: " + str(score)
+    # print "Score: " + str(score)
+
+    # return score
+
+    # IMPLEMENTATION 2
+    # minDist = float('inf')
+    # for eachFood in currFood:
+    #   tmpDist = manhattanDistance(currPos,eachFood)
+    #   minDist = min(minDist,tmpDist)
+    # score += minDist
+    # score += 1000.0*currentGameState.getNumFood()
+
+    # minGhost = float('inf')
+    # for eachGhost in currentGameState.getGhostStates():
+    #   tmpDist = manhattanDistance(currPos,eachGhost.getPosition())
+    #   minGhost = min(minGhost,tmpDist)
+    # if minGhost < 4.0:
+    #   score = float('inf')
+    # score -= 10.0*currentGameState.getScore()
+    # return -1.0*score
+
+    # IMPLEMENTATION 3: WORKS!
+    minDist = float('inf')
+    for eachFood in currFood:
+      tmpDist = manhattanDistance(currPos,eachFood)
+      minDist = min(minDist,tmpDist)
+    minGhost = float('inf')
+    for eachGhost in currentGameState.getGhostStates():
+      tmpDist = manhattanDistance(currPos,eachGhost.getPosition())
+      minGhost = min(minGhost,tmpDist)
+    score += -1.5*minDist
+    score += -4.0*(len(currFood))
+    if len(currFood) == 0:
+      score = float('inf')
+    score += -2.0*(1.0/minGhost)
 
     return score
 
+
 # Abbreviation
 better = betterEvaluationFunction
+
 
