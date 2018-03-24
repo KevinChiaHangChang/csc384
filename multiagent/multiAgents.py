@@ -446,89 +446,44 @@ def betterEvaluationFunction(currentGameState):
     # get information about current state
     currPos = currentGameState.getPacmanPosition()
     currFood = currentGameState.getFood().asList()
-    # legalActions = currentGameState.getLegalPacmanActions()
+    currCapsules = currentGameState.getCapsules()
 
     score = currentGameState.getScore()
-    # score = 0.0
-    if currentGameState.isWin():
-      return float('inf')
-    elif currentGameState.isLose():
-      return -(float('inf'))
 
-    # IMPLEMENTATION 1
-    # check if next state brings Pacman closer to ghosts
-    # find current state minimum distance to ghosts
-    # currGhostDist = float('inf')
-    # for eachGhost in currentGameState.getGhostStates():
-    #   tmpDist = manhattanDistance(currPos,eachGhost.getPosition())
-    #   currGhostDist = min(currGhostDist,tmpDist)
-    # if currGhostDist == 0.0:
-    #   score -= 100.0
-    # else:
-    #   if currGhostDist < 5.0:
-    #     score -= 5.0/currGhostDist
-    # print "Score: " + str(score)
-    
-    # check if next state brings Pacman closer to food
-    # if len(newFood.asList()) < len(currFood.asList()):
-    #   score += 5.0
-    # print "Score: " + str(score)
-    # find current state minimum distance to food
-    # currFoodDist = float('inf')
-    # numFood = len(currFood.asList())
-    # if currPos in currFood.asList():
-    #   numFood -= 1
-    # for eachFood in currFood.asList():
-    #   tmpDist = manhattanDistance(currPos,eachFood)
-    #   currFoodDist = min(currFoodDist,tmpDist)
-    # # if currFoodDist == 0.0:
-    # #   score += 100.0
-    # if currFoodDist != 0:
-    #   score -= currFoodDist
-    #   print(str(5.0/currFoodDist))
-    # score -= 4.0*numFood
-    # find next state minimum distance to food
-    # newFoodDist = float('inf')
-    # for eachFood in newFood.asList():
-    #   tmpDist = manhattanDistance(newPos,eachFood)
-    #   newFoodDist = min(newFoodDist,tmpDist)
-    # if newFoodDist < currFoodDist:
-    #   score += 3.0/currFoodDist
-    # print "Score: " + str(score)
-
-    # return score
-
-    # IMPLEMENTATION 2
-    # minDist = float('inf')
-    # for eachFood in currFood:
-    #   tmpDist = manhattanDistance(currPos,eachFood)
-    #   minDist = min(minDist,tmpDist)
-    # score += minDist
-    # score += 1000.0*currentGameState.getNumFood()
-
-    # minGhost = float('inf')
-    # for eachGhost in currentGameState.getGhostStates():
-    #   tmpDist = manhattanDistance(currPos,eachGhost.getPosition())
-    #   minGhost = min(minGhost,tmpDist)
-    # if minGhost < 4.0:
-    #   score = float('inf')
-    # score -= 10.0*currentGameState.getScore()
-    # return -1.0*score
-
-    # IMPLEMENTATION 3: WORKS!
+    # find min distance to food
     minDist = float('inf')
     for eachFood in currFood:
       tmpDist = manhattanDistance(currPos,eachFood)
       minDist = min(minDist,tmpDist)
+      # find min distance to ghost
     minGhost = float('inf')
     for eachGhost in currentGameState.getGhostStates():
       tmpDist = manhattanDistance(currPos,eachGhost.getPosition())
       minGhost = min(minGhost,tmpDist)
-    score += -1.5*minDist
-    score += -4.0*(len(currFood))
+    # find min distance to capsule
+    minCapsule = float('inf')
+    for eachCapsule in currCapsules:
+      tmpDist = manhattanDistance(currPos,eachCapsule)
+      minCapsule = min(minCapsule,tmpDist)
+    # score += -1.5*minDist
+    # score += -4.0*(len(currFood))
+    # score += -2.0*(1.0/minGhost)
+    # assign weights
+    score += 3.5/minDist
+    score += 1.5/minCapsule
     if len(currFood) == 0:
-      score = float('inf')
-    score += -2.0*(1.0/minGhost)
+      score += 20000.0
+    else:
+      score += 10.0/len(currFood)
+    if len(currCapsules) == 0:
+      score += 10000.0
+    else:
+      score += 5.0/len(currCapsules)
+    if minGhost == 0:
+      score = -(float('inf'))
+    # only consider ghost distance is within radius of 3.0
+    elif minGhost < 3.0:
+      score += 2.0/minGhost
 
     return score
 
